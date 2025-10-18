@@ -1,0 +1,13 @@
+package com.diplomado.diplomado;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class GiftlyApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
