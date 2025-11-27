@@ -19,4 +19,10 @@ public class JwtConfig {
         // In a real application, this would validate the JWT signature and expiration
         return token != null && !token.isEmpty() && username != null;
     }
+
+    public String generateToken(String username) {
+        // Mock token generation
+        return "Bearer " + java.util.Base64.getEncoder()
+                .encodeToString((username + ":" + System.currentTimeMillis()).getBytes());
+    }
 }
