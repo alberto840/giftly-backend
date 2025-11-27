@@ -1,4 +1,4 @@
-package com.diplomado.diplomado.tienda_permisos;
+package com.diplomado.diplomado.tienda_premios;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -13,7 +13,7 @@ import java.util.List;
 import com.diplomado.diplomado.detalle_pedido.DetallePedidoEntity;
 import com.diplomado.diplomado.pedido_producto.PedidoProductoEntity;
 import com.diplomado.diplomado.qr.QrEntity;
-import com.diplomado.diplomado.tienda_permisos.TiendaPremioEntity;
+import com.diplomado.diplomado.tienda_premios.TiendaPremioEntity;
 import com.diplomado.diplomado.user.UsuarioEntity;
 
 @Entity
