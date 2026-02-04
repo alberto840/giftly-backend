@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.reseñas;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/resena")
+@Tag(name = "Resena", description = "Review management endpoints")
 public class ResenaController {
     private static final Logger logger = LoggerFactory.getLogger(ResenaController.class);
     private final ResenaService resenaService;
@@ -24,10 +28,11 @@ public class ResenaController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create review", description = "Creates a new review. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<ResenaDto>> crearResena(
             @RequestBody ResenaDto resenaDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class ResenaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Resena creada exitosamente", nuevaResena));
     }
 
+    @Operation(summary = "Get all reviews", description = "Retrieves a list of all reviews.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<ResenaDto>>> obtenerTodasLasResenas(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class ResenaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Resenas obtenidas exitosamente", resenas));
     }
 
+    @Operation(summary = "Get review by ID", description = "Retrieves a specific review by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<ResenaDto>> obtenerResenaPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class ResenaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Resena obtenida exitosamente", resena));
     }
 
+    @Operation(summary = "Update review", description = "Updates an existing review by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<ResenaDto>> actualizarResena(
             @PathVariable Integer id,
             @RequestBody ResenaDto resenaDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class ResenaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Resena actualizada exitosamente", resenaActualizada));
     }
 
+    @Operation(summary = "Delete review", description = "Deletes a review by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarResena(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

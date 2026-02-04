@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.categoria;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/categoria")
+@Tag(name = "Categoria", description = "Category management endpoints")
 public class CategoriaController {
     private static final Logger logger = LoggerFactory.getLogger(CategoriaController.class);
     private final CategoriaService categoriaService;
@@ -24,10 +28,11 @@ public class CategoriaController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create a category", description = "Creates a new category. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<CategoriaDto>> crearCategoria(
             @RequestBody CategoriaDto categoriaDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class CategoriaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Categoria creada exitosamente", nuevaCategoria));
     }
 
+    @Operation(summary = "Get all categories", description = "Retrieves a list of all categories.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<CategoriaDto>>> obtenerTodasLasCategorias(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class CategoriaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Categorias obtenidas exitosamente", categorias));
     }
 
+    @Operation(summary = "Get category by ID", description = "Retrieves a specific category by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<CategoriaDto>> obtenerCategoriaPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class CategoriaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Categoria obtenida exitosamente", categoria));
     }
 
+    @Operation(summary = "Update category", description = "Updates an existing category by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<CategoriaDto>> actualizarCategoria(
             @PathVariable Integer id,
             @RequestBody CategoriaDto categoriaDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class CategoriaController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Categoria actualizada exitosamente", categoriaActualizada));
     }
 
+    @Operation(summary = "Delete category", description = "Deletes a category by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarCategoria(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

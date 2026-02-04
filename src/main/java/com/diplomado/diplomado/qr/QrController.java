@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.qr;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/qr")
+@Tag(name = "Qr", description = "QR management endpoints")
 public class QrController {
     private static final Logger logger = LoggerFactory.getLogger(QrController.class);
     private final QrService qrService;
@@ -24,10 +28,11 @@ public class QrController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create QR", description = "Creates a new QR code. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<QrDto>> crearQr(
             @RequestBody QrDto qrDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class QrController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Qr creado exitosamente", nuevoQr));
     }
 
+    @Operation(summary = "Get all QRs", description = "Retrieves a list of all QR codes.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<QrDto>>> obtenerTodosLosQrs(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class QrController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Qrs obtenidos exitosamente", qrs));
     }
 
+    @Operation(summary = "Get QR by ID", description = "Retrieves a specific QR code by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<QrDto>> obtenerQrPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class QrController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Qr obtenido exitosamente", qr));
     }
 
+    @Operation(summary = "Update QR", description = "Updates an existing QR code by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<QrDto>> actualizarQr(
             @PathVariable Integer id,
             @RequestBody QrDto qrDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class QrController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Qr actualizado exitosamente", qrActualizado));
     }
 
+    @Operation(summary = "Delete QR", description = "Deletes a QR code by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarQr(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

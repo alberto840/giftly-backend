@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.pedido_producto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/pedido-producto")
+@Tag(name = "PedidoProducto", description = "Order-Product relationship management endpoints")
 public class PedidoProductoController {
     private static final Logger logger = LoggerFactory.getLogger(PedidoProductoController.class);
     private final PedidoProductoService pedidoProductoService;
@@ -24,10 +28,11 @@ public class PedidoProductoController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create order-product relationship", description = "Creates a new order-product relationship. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<PedidoProductoDto>> crearPedidoProducto(
             @RequestBody PedidoProductoDto pedidoProductoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class PedidoProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido producto creado exitosamente", nuevoPedidoProducto));
     }
 
+    @Operation(summary = "Get all order-product relationships", description = "Retrieves a list of all order-product relationships.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<PedidoProductoDto>>> obtenerTodosLosPedidoProductos(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class PedidoProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido productos obtenidos exitosamente", pedidoProductos));
     }
 
+    @Operation(summary = "Get order-product relationship by ID", description = "Retrieves a specific order-product relationship by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<PedidoProductoDto>> obtenerPedidoProductoPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class PedidoProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido producto obtenido exitosamente", pedidoProducto));
     }
 
+    @Operation(summary = "Update order-product relationship", description = "Updates an existing order-product relationship by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<PedidoProductoDto>> actualizarPedidoProducto(
             @PathVariable Integer id,
             @RequestBody PedidoProductoDto pedidoProductoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -102,10 +110,11 @@ public class PedidoProductoController {
                 .ok(new ResponseDto<>(true, "Pedido producto actualizado exitosamente", pedidoProductoActualizado));
     }
 
+    @Operation(summary = "Delete order-product relationship", description = "Deletes an order-product relationship by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarPedidoProducto(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

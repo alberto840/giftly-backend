@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.roles;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/rol")
+@Tag(name = "Rol", description = "Role management endpoints")
 public class RolController {
     private static final Logger logger = LoggerFactory.getLogger(RolController.class);
     private final RolService rolService;
@@ -24,10 +28,11 @@ public class RolController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create role", description = "Creates a new role. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<RolDto>> crearRol(
             @RequestBody RolDto rolDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class RolController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Rol creado exitosamente", nuevoRol));
     }
 
+    @Operation(summary = "Get all roles", description = "Retrieves a list of all roles.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<RolDto>>> obtenerTodosLosRoles(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class RolController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Roles obtenidos exitosamente", roles));
     }
 
+    @Operation(summary = "Get role by ID", description = "Retrieves a specific role by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<RolDto>> obtenerRolPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class RolController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Rol obtenido exitosamente", rol));
     }
 
+    @Operation(summary = "Update role", description = "Updates an existing role by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<RolDto>> actualizarRol(
             @PathVariable Integer id,
             @RequestBody RolDto rolDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class RolController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Rol actualizado exitosamente", rolActualizado));
     }
 
+    @Operation(summary = "Delete role", description = "Deletes a role by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarRol(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

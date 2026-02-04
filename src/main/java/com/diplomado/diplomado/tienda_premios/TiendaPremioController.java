@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.tienda_premios;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/tienda-premio")
+@Tag(name = "TiendaPremio", description = "Prize Shop management endpoints")
 public class TiendaPremioController {
     private static final Logger logger = LoggerFactory.getLogger(TiendaPremioController.class);
     private final TiendaPremioService tiendaPremioService;
@@ -24,10 +28,11 @@ public class TiendaPremioController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create prize shop item", description = "Creates a new prize shop item. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<TiendaPremioDto>> crearTiendaPremio(
             @RequestBody TiendaPremioDto tiendaPremioDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class TiendaPremioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Tienda premio creada exitosamente", nuevaTiendaPremio));
     }
 
+    @Operation(summary = "Get all prize shop items", description = "Retrieves a list of all prize shop items.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<TiendaPremioDto>>> obtenerTodasLasTiendaPremios(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class TiendaPremioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Tienda premios obtenidas exitosamente", tiendaPremios));
     }
 
+    @Operation(summary = "Get prize shop item by ID", description = "Retrieves a specific prize shop item by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<TiendaPremioDto>> obtenerTiendaPremioPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class TiendaPremioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Tienda premio obtenida exitosamente", tiendaPremio));
     }
 
+    @Operation(summary = "Update prize shop item", description = "Updates an existing prize shop item by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<TiendaPremioDto>> actualizarTiendaPremio(
             @PathVariable Integer id,
             @RequestBody TiendaPremioDto tiendaPremioDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -101,10 +109,11 @@ public class TiendaPremioController {
                 .ok(new ResponseDto<>(true, "Tienda premio actualizada exitosamente", tiendaPremioActualizada));
     }
 
+    @Operation(summary = "Delete prize shop item", description = "Deletes a prize shop item by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarTiendaPremio(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

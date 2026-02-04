@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.detalle_pedido;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/detalle-pedido")
+@Tag(name = "DetallePedido", description = "Order detail management endpoints")
 public class DetallePedidoController {
     private static final Logger logger = LoggerFactory.getLogger(DetallePedidoController.class);
     private final DetallePedidoService detallePedidoService;
@@ -24,10 +28,11 @@ public class DetallePedidoController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create order detail", description = "Creates a new order detail. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<DetallePedidoDto>> crearDetallePedido(
             @RequestBody DetallePedidoDto detallePedidoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class DetallePedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Detalle pedido creado exitosamente", nuevoDetallePedido));
     }
 
+    @Operation(summary = "Get all order details", description = "Retrieves a list of all order details.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<DetallePedidoDto>>> obtenerTodosLosDetallePedidos(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class DetallePedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Detalle pedidos obtenidos exitosamente", detallePedidos));
     }
 
+    @Operation(summary = "Get order detail by ID", description = "Retrieves a specific order detail by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<DetallePedidoDto>> obtenerDetallePedidoPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class DetallePedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Detalle pedido obtenido exitosamente", detallePedido));
     }
 
+    @Operation(summary = "Update order detail", description = "Updates an existing order detail by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<DetallePedidoDto>> actualizarDetallePedido(
             @PathVariable Integer id,
             @RequestBody DetallePedidoDto detallePedidoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -101,10 +109,11 @@ public class DetallePedidoController {
                 .ok(new ResponseDto<>(true, "Detalle pedido actualizado exitosamente", detallePedidoActualizado));
     }
 
+    @Operation(summary = "Delete order detail", description = "Deletes an order detail by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarDetallePedido(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

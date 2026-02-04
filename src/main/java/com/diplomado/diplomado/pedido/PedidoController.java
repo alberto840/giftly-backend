@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.pedido;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/pedido")
+@Tag(name = "Pedido", description = "Order management endpoints")
 public class PedidoController {
     private static final Logger logger = LoggerFactory.getLogger(PedidoController.class);
     private final PedidoService pedidoService;
@@ -24,10 +28,11 @@ public class PedidoController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create order", description = "Creates a new order. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<PedidoDto>> crearPedido(
             @RequestBody PedidoDto pedidoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido creado exitosamente", nuevoPedido));
     }
 
+    @Operation(summary = "Get all orders", description = "Retrieves a list of all orders.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<PedidoDto>>> obtenerTodosLosPedidos(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedidos obtenidos exitosamente", pedidos));
     }
 
+    @Operation(summary = "Get order by ID", description = "Retrieves a specific order by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<PedidoDto>> obtenerPedidoPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido obtenido exitosamente", pedido));
     }
 
+    @Operation(summary = "Update order", description = "Updates an existing order by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<PedidoDto>> actualizarPedido(
             @PathVariable Integer id,
             @RequestBody PedidoDto pedidoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido actualizado exitosamente", pedidoActualizado));
     }
 
+    @Operation(summary = "Delete order", description = "Deletes an order by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarPedido(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.producto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/producto")
+@Tag(name = "Producto", description = "Product management endpoints")
 public class ProductoController {
     private static final Logger logger = LoggerFactory.getLogger(ProductoController.class);
     private final ProductoService productoService;
@@ -24,10 +28,11 @@ public class ProductoController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create a product", description = "Creates a new product. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<ProductoDto>> crearProducto(
             @RequestBody ProductoDto productoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class ProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Producto creado exitosamente", nuevoProducto));
     }
 
+    @Operation(summary = "Get all products", description = "Retrieves a list of all products.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<ProductoDto>>> obtenerTodosLosProductos(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class ProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Productos obtenidos exitosamente", productos));
     }
 
+    @Operation(summary = "Get product by ID", description = "Retrieves a specific product by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<ProductoDto>> obtenerProductoPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class ProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Producto obtenido exitosamente", producto));
     }
 
+    @Operation(summary = "Update product", description = "Updates an existing product by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<ProductoDto>> actualizarProducto(
             @PathVariable Integer id,
             @RequestBody ProductoDto productoDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class ProductoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Producto actualizado exitosamente", productoActualizado));
     }
 
+    @Operation(summary = "Delete product", description = "Deletes a product by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarProducto(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.ubicacion;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/ubicacion")
+@Tag(name = "Ubicacion", description = "Location management endpoints")
 public class UbicacionController {
     private static final Logger logger = LoggerFactory.getLogger(UbicacionController.class);
     private final UbicacionService ubicacionService;
@@ -24,10 +28,11 @@ public class UbicacionController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create location", description = "Creates a new location. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<UbicacionDto>> crearUbicacion(
             @RequestBody UbicacionDto ubicacionDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class UbicacionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Ubicacion creada exitosamente", nuevaUbicacion));
     }
 
+    @Operation(summary = "Get all locations", description = "Retrieves a list of all locations.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<UbicacionDto>>> obtenerTodasLasUbicaciones(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class UbicacionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Ubicaciones obtenidas exitosamente", ubicaciones));
     }
 
+    @Operation(summary = "Get location by ID", description = "Retrieves a specific location by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<UbicacionDto>> obtenerUbicacionPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class UbicacionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Ubicacion obtenida exitosamente", ubicacion));
     }
 
+    @Operation(summary = "Update location", description = "Updates an existing location by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<UbicacionDto>> actualizarUbicacion(
             @PathVariable Integer id,
             @RequestBody UbicacionDto ubicacionDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class UbicacionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Ubicacion actualizada exitosamente", ubicacionActualizada));
     }
 
+    @Operation(summary = "Delete location", description = "Deletes a location by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarUbicacion(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

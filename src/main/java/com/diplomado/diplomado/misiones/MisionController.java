@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.misiones;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/mision")
+@Tag(name = "Mision", description = "Mission management endpoints")
 public class MisionController {
     private static final Logger logger = LoggerFactory.getLogger(MisionController.class);
     private final MisionService misionService;
@@ -24,10 +28,11 @@ public class MisionController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create a mission", description = "Creates a new mission. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<MisionDto>> crearMision(
             @RequestBody MisionDto misionDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class MisionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Mision creada exitosamente", nuevaMision));
     }
 
+    @Operation(summary = "Get all missions", description = "Retrieves a list of all missions.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<MisionDto>>> obtenerTodasLasMisiones(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class MisionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Misiones obtenidas exitosamente", misiones));
     }
 
+    @Operation(summary = "Get mission by ID", description = "Retrieves a specific mission by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<MisionDto>> obtenerMisionPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class MisionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Mision obtenida exitosamente", mision));
     }
 
+    @Operation(summary = "Update mission", description = "Updates an existing mission by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<MisionDto>> actualizarMision(
             @PathVariable Integer id,
             @RequestBody MisionDto misionDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class MisionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Mision actualizada exitosamente", misionActualizada));
     }
 
+    @Operation(summary = "Delete mission", description = "Deletes a mission by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarMision(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);

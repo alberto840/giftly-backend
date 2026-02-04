@@ -1,5 +1,8 @@
 package com.diplomado.diplomado.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
 import com.diplomado.diplomado.utils.ResponseDto;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/usuario")
+@Tag(name = "Usuario", description = "User management endpoints")
 public class UsuarioController {
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
     private final UsuarioService usuarioService;
@@ -24,10 +28,11 @@ public class UsuarioController {
         this.jwtConfig = jwtConfig;
     }
 
+    @Operation(summary = "Create user", description = "Creates a new user. Requires authentication.")
     @PostMapping("/crear")
     public ResponseEntity<ResponseDto<UsuarioDto>> crearUsuario(
             @RequestBody UsuarioDto usuarioDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -43,9 +48,10 @@ public class UsuarioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Usuario creado exitosamente", nuevoUsuario));
     }
 
+    @Operation(summary = "Get all users", description = "Retrieves a list of all users.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<UsuarioDto>>> obtenerTodosLosUsuarios(
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -61,10 +67,11 @@ public class UsuarioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Usuarios obtenidos exitosamente", usuarios));
     }
 
+    @Operation(summary = "Get user by ID", description = "Retrieves a specific user by its ID.")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<UsuarioDto>> obtenerUsuarioPorId(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -80,11 +87,12 @@ public class UsuarioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Usuario obtenido exitosamente", usuario));
     }
 
+    @Operation(summary = "Update user", description = "Updates an existing user by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<UsuarioDto>> actualizarUsuario(
             @PathVariable Integer id,
             @RequestBody UsuarioDto usuarioDto,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
@@ -100,10 +108,11 @@ public class UsuarioController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Usuario actualizado exitosamente", usuarioActualizado));
     }
 
+    @Operation(summary = "Delete user", description = "Deletes a user by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarUsuario(
             @PathVariable Integer id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
 
         String extractedToken = token.replace("Bearer ", "");
         String username = jwtConfig.extractUsername(extractedToken);
