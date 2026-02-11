@@ -12,16 +12,18 @@ public class ProductoDto implements Serializable {
     private Integer stock;
     private BigDecimal precio;
     private Integer categoriaId;
+    private String imgUrl;
 
     public ProductoDto() {
     }
 
-    public ProductoDto(Integer id, String nombre, Integer stock, BigDecimal precio, Integer categoriaId) {
+    public ProductoDto(Integer id, String nombre, Integer stock, BigDecimal precio, Integer categoriaId, String imgUrl) {
         this.id = id;
         this.nombre = nombre;
         this.stock = stock;
         this.precio = precio;
         this.categoriaId = categoriaId;
+        this.imgUrl = imgUrl;
     }
 
     public Integer getId() {
@@ -62,5 +64,13 @@ public class ProductoDto implements Serializable {
 
     public void setCategoriaId(Integer categoriaId) {
         this.categoriaId = categoriaId;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

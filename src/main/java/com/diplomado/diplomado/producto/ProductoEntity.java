@@ -35,6 +35,9 @@ public class ProductoEntity implements Serializable {
     @Column(name = "precio", precision = 15, scale = 2)
     private BigDecimal precio;
 
+    @Column(name = "img_url", length = 500)
+    private String imgUrl;
+
     // Relación ManyToOne con Categoría
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")

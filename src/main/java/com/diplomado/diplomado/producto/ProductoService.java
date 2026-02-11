@@ -33,6 +33,7 @@ public class ProductoService {
         productoEntity.setNombre(productoDto.getNombre());
         productoEntity.setStock(productoDto.getStock());
         productoEntity.setPrecio(productoDto.getPrecio());
+        productoEntity.setImgUrl(productoDto.getImgUrl());
         productoEntity.setCategoria(categoria);
 
         ProductoEntity nuevoProducto = productoRepository.save(productoEntity);
@@ -72,6 +73,7 @@ public class ProductoService {
         productoEntity.setNombre(productoDto.getNombre());
         productoEntity.setStock(productoDto.getStock());
         productoEntity.setPrecio(productoDto.getPrecio());
+        productoEntity.setImgUrl(productoDto.getImgUrl());
         productoEntity.setCategoria(categoria);
 
         ProductoEntity productoActualizado = productoRepository.save(productoEntity);
@@ -95,6 +97,7 @@ public class ProductoService {
                 productoEntity.getNombre(),
                 productoEntity.getStock(),
                 productoEntity.getPrecio(),
-                productoEntity.getCategoria().getId());
+                productoEntity.getCategoria().getId(),
+                productoEntity.getImgUrl());
     }
 }
