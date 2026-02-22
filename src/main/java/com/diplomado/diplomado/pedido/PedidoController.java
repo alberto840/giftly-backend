@@ -48,6 +48,26 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido creado exitosamente", nuevoPedido));
     }
 
+    @Operation(summary = "Register complete order", description = "Registers a new complete order with details and products. Requires authentication.")
+    @PostMapping("/registrar-completo")
+    public ResponseEntity<ResponseDto<PedidoRegistroRequestDto>> registrarPedidoCompleto(
+            @RequestBody PedidoRegistroRequestDto request,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para registrar pedido completo");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para registrar pedido completo: {}", username);
+        PedidoRegistroRequestDto nuevoPedidoCompleto = pedidoService.registrarPedidoCompleto(request);
+        return ResponseEntity.ok(new ResponseDto<>(true, "Pedido completo registrado exitosamente", nuevoPedidoCompleto));
+    }
+
     @Operation(summary = "Get all orders", description = "Retrieves a list of all orders.")
     @GetMapping
     public ResponseEntity<ResponseDto<List<PedidoDto>>> obtenerTodosLosPedidos(

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.diplomado.diplomado.detalle_pedido.DetallePedidoEntity;
+import com.diplomado.diplomado.user.UsuarioEntity;
 
 @Entity
 @Table(name = "ubicacion")
@@ -29,7 +30,15 @@ public class UbicacionEntity implements Serializable {
     @Column(name = "latitud", length = 150)
     private String latitud;
 
+    @Column(name = "detalle", length = 300)
+    private String detalle;
+
     // Relación OneToMany con Detalle_pedido
     @OneToMany(mappedBy = "ubicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedidoEntity> detallePedidos;
+
+    // Relación ManyToOne con Usuarios
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuarios_id", referencedColumnName = "id")
+    private UsuarioEntity usuario;
 }

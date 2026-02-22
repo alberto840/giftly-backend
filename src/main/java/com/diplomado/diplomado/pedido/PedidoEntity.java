@@ -40,6 +40,9 @@ public class PedidoEntity implements Serializable {
     @Column(name = "total", precision = 15, scale = 2)
     private BigDecimal total;
 
+    @Column(name = "status", length = 50)
+    private String status;
+
     @Column(name = "QR_id")
     private Integer qrId; // Se mantiene como campo simple ya que la relación es 1 a 1 y 'QR_id' es la FK en 'pedido'
 

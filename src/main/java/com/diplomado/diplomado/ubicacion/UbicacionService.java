@@ -1,5 +1,7 @@
 package com.diplomado.diplomado.ubicacion;
 
+import com.diplomado.diplomado.user.UsuarioEntity;
+import com.diplomado.diplomado.user.UsuarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,12 @@ import java.util.stream.Collectors;
 public class UbicacionService {
     private static final Logger logger = LoggerFactory.getLogger(UbicacionService.class);
     private final UbicacionRepository ubicacionRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public UbicacionService(UbicacionRepository ubicacionRepository) {
+    public UbicacionService(UbicacionRepository ubicacionRepository, UsuarioRepository usuarioRepository) {
         this.ubicacionRepository = ubicacionRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public UbicacionDto crearUbicacion(UbicacionDto ubicacionDto) {
@@ -24,6 +28,13 @@ public class UbicacionService {
         UbicacionEntity ubicacionEntity = new UbicacionEntity();
         ubicacionEntity.setLatitud(ubicacionDto.getLatitud());
         ubicacionEntity.setLongitud(ubicacionDto.getLongitud());
+        ubicacionEntity.setDetalle(ubicacionDto.getDetalle());
+
+        if (ubicacionDto.getUsuarioId() != null) {
+            UsuarioEntity usuario = usuarioRepository.findById(ubicacionDto.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + ubicacionDto.getUsuarioId()));
+            ubicacionEntity.setUsuario(usuario);
+        }
 
         UbicacionEntity nuevaUbicacion = ubicacionRepository.save(ubicacionEntity);
         logger.info("Ubicacion creada con ID: {}", nuevaUbicacion.getId());
@@ -57,6 +68,15 @@ public class UbicacionService {
 
         ubicacionEntity.setLatitud(ubicacionDto.getLatitud());
         ubicacionEntity.setLongitud(ubicacionDto.getLongitud());
+        ubicacionEntity.setDetalle(ubicacionDto.getDetalle());
+
+        if (ubicacionDto.getUsuarioId() != null) {
+            UsuarioEntity usuario = usuarioRepository.findById(ubicacionDto.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + ubicacionDto.getUsuarioId()));
+            ubicacionEntity.setUsuario(usuario);
+        } else {
+            ubicacionEntity.setUsuario(null);
+        }
 
         UbicacionEntity ubicacionActualizada = ubicacionRepository.save(ubicacionEntity);
 
@@ -77,6 +97,8 @@ public class UbicacionService {
         return new UbicacionDto(
                 ubicacionEntity.getId(),
                 ubicacionEntity.getLongitud(),
-                ubicacionEntity.getLatitud());
+                ubicacionEntity.getLatitud(),
+                ubicacionEntity.getDetalle(),
+                ubicacionEntity.getUsuario() != null ? ubicacionEntity.getUsuario().getId() : null);
     }
 }

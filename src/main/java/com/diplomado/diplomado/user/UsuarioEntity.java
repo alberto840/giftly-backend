@@ -13,6 +13,7 @@ import com.diplomado.diplomado.pedido.PedidoEntity;
 import com.diplomado.diplomado.referidos.ReferidoEntity;
 import com.diplomado.diplomado.reseñas.ResenaEntity;
 import com.diplomado.diplomado.roles.RolEntity;
+import com.diplomado.diplomado.ubicacion.UbicacionEntity;
 
 @Entity
 @Table(name = "usuarios")
@@ -60,4 +61,8 @@ public class UsuarioEntity implements Serializable {
     // Relación OneToMany con Pedidos
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoEntity> pedidos;
+
+    // Relación OneToMany con Ubicaciones
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UbicacionEntity> ubicaciones;
 }

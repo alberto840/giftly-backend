@@ -15,12 +15,13 @@ public class PedidoDto implements Serializable {
     private Integer qrId;
     private Integer usuarioId;
     private Integer tiendaPremioId;
+    private String status;
 
     public PedidoDto() {
     }
 
     public PedidoDto(Integer id, Date fechaCreacion, Date fechaEnvio, BigDecimal total, Integer qrId,
-            Integer usuarioId, Integer tiendaPremioId) {
+            Integer usuarioId, Integer tiendaPremioId, String status) {
         this.id = id;
         this.fechaCreacion = fechaCreacion;
         this.fechaEnvio = fechaEnvio;
@@ -28,6 +29,7 @@ public class PedidoDto implements Serializable {
         this.qrId = qrId;
         this.usuarioId = usuarioId;
         this.tiendaPremioId = tiendaPremioId;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -84,5 +86,13 @@ public class PedidoDto implements Serializable {
 
     public void setTiendaPremioId(Integer tiendaPremioId) {
         this.tiendaPremioId = tiendaPremioId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
