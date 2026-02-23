@@ -60,6 +60,15 @@ public class UbicacionService {
         return convertirUbicacionEntityADto(ubicacion);
     }
 
+    public List<UbicacionDto> obtenerUbicacionesPorUsuarioId(Integer usuarioId) {
+        logger.info("Obteniendo ubicaciones del usuario con ID: {}", usuarioId);
+
+        List<UbicacionEntity> ubicaciones = ubicacionRepository.findByUsuarioId(usuarioId);
+        return ubicaciones.stream()
+                .map(this::convertirUbicacionEntityADto)
+                .collect(Collectors.toList());
+    }
+
     public UbicacionDto actualizarUbicacion(Integer id, UbicacionDto ubicacionDto) {
         logger.info("Actualizando ubicacion con ID: {}", id);
 

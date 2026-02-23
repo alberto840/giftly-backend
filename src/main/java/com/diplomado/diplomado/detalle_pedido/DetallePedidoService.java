@@ -45,6 +45,7 @@ public class DetallePedidoService {
         detallePedidoEntity.setCelular1(detallePedidoDto.getCelular1());
         detallePedidoEntity.setCelular2(detallePedidoDto.getCelular2());
         detallePedidoEntity.setNombreObjetivo(detallePedidoDto.getNombreObjetivo());
+        detallePedidoEntity.setNombreEmisor(detallePedidoDto.getNombreEmisor());
         detallePedidoEntity.setPedido(pedido);
         detallePedidoEntity.setUbicacion(ubicacion);
 
@@ -92,6 +93,7 @@ public class DetallePedidoService {
         detallePedidoEntity.setCelular1(detallePedidoDto.getCelular1());
         detallePedidoEntity.setCelular2(detallePedidoDto.getCelular2());
         detallePedidoEntity.setNombreObjetivo(detallePedidoDto.getNombreObjetivo());
+        detallePedidoEntity.setNombreEmisor(detallePedidoDto.getNombreEmisor());
         detallePedidoEntity.setPedido(pedido);
         detallePedidoEntity.setUbicacion(ubicacion);
 
@@ -119,6 +121,7 @@ public class DetallePedidoService {
                 detallePedidoEntity.getCelular1(),
                 detallePedidoEntity.getCelular2(),
                 detallePedidoEntity.getNombreObjetivo(),
+                detallePedidoEntity.getNombreEmisor(),
                 detallePedidoEntity.getPedido().getId(),
                 detallePedidoEntity.getUbicacion().getId());
     }

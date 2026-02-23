@@ -87,6 +87,26 @@ public class UbicacionController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Ubicacion obtenida exitosamente", ubicacion));
     }
 
+    @Operation(summary = "Get locations by user ID", description = "Retrieves all locations belonging to a specific user.")
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<ResponseDto<List<UbicacionDto>>> obtenerUbicacionesPorUsuarioId(
+            @PathVariable Integer usuarioId,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para obtener ubicaciones por usuario");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para obtener ubicaciones del usuario con ID: {}", usuarioId);
+        List<UbicacionDto> ubicaciones = ubicacionService.obtenerUbicacionesPorUsuarioId(usuarioId);
+        return ResponseEntity.ok(new ResponseDto<>(true, "Ubicaciones del usuario obtenidas exitosamente", ubicaciones));
+    }
+
     @Operation(summary = "Update location", description = "Updates an existing location by its ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ResponseDto<UbicacionDto>> actualizarUbicacion(

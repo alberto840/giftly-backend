@@ -13,6 +13,7 @@ public class DetallePedidoDto implements Serializable {
     private String celular1;
     private String celular2;
     private String nombreObjetivo;
+    private String nombreEmisor;
     private Integer pedidoId;
     private Integer ubicacionId;
 
@@ -20,7 +21,7 @@ public class DetallePedidoDto implements Serializable {
     }
 
     public DetallePedidoDto(Integer id, String mensaje, String instrucciones, String receptorEncarga,
-            String celular1, String celular2, String nombreObjetivo, Integer pedidoId, Integer ubicacionId) {
+            String celular1, String celular2, String nombreObjetivo, String nombreEmisor, Integer pedidoId, Integer ubicacionId) {
         this.id = id;
         this.mensaje = mensaje;
         this.instrucciones = instrucciones;
@@ -28,6 +29,7 @@ public class DetallePedidoDto implements Serializable {
         this.celular1 = celular1;
         this.celular2 = celular2;
         this.nombreObjetivo = nombreObjetivo;
+        this.nombreEmisor = nombreEmisor;
         this.pedidoId = pedidoId;
         this.ubicacionId = ubicacionId;
     }
@@ -86,6 +88,14 @@ public class DetallePedidoDto implements Serializable {
 
     public void setNombreObjetivo(String nombreObjetivo) {
         this.nombreObjetivo = nombreObjetivo;
+    }
+
+    public String getNombreEmisor() {
+        return nombreEmisor;
+    }
+
+    public void setNombreEmisor(String nombreEmisor) {
+        this.nombreEmisor = nombreEmisor;
     }
 
     public Integer getPedidoId() {

@@ -41,6 +41,9 @@ public class DetallePedidoEntity implements Serializable {
     @Column(name = "nombre_objetivo", length = 20)
     private String nombreObjetivo;
 
+    @Column(name = "nombre_emisor", length = 255)
+    private String nombreEmisor;
+
     // Clave Foránea a Pedido (Relación OneToOne)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id") // Asume que la PK de Detalle_pedido es también la FK a Pedido
