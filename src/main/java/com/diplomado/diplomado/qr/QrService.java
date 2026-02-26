@@ -25,13 +25,16 @@ public class QrService {
     public QrDto crearQr(QrDto qrDto) {
         logger.info("Creando qr");
 
-        PedidoEntity pedido = pedidoRepository.findById(qrDto.getPedidoId())
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + qrDto.getPedidoId()));
-
         QrEntity qrEntity = new QrEntity();
         qrEntity.setFechaCreacion(qrDto.getFechaCreacion());
         qrEntity.setFechaExpiracion(qrDto.getFechaExpiracion());
-        qrEntity.setPedido(pedido);
+        qrEntity.setImageUrl(qrDto.getImageUrl());
+
+        if (qrDto.getPedidoId() != null) {
+            PedidoEntity pedido = pedidoRepository.findById(qrDto.getPedidoId())
+                    .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + qrDto.getPedidoId()));
+            qrEntity.setPedido(pedido);
+        }
 
         QrEntity nuevoQr = qrRepository.save(qrEntity);
         logger.info("Qr creado con ID: {}", nuevoQr.getId());
@@ -63,16 +66,32 @@ public class QrService {
         QrEntity qrEntity = qrRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Qr no encontrado con ID: " + id));
 
-        PedidoEntity pedido = pedidoRepository.findById(qrDto.getPedidoId())
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + qrDto.getPedidoId()));
-
         qrEntity.setFechaCreacion(qrDto.getFechaCreacion());
         qrEntity.setFechaExpiracion(qrDto.getFechaExpiracion());
-        qrEntity.setPedido(pedido);
+        qrEntity.setImageUrl(qrDto.getImageUrl());
+
+        if (qrDto.getPedidoId() != null) {
+            PedidoEntity pedido = pedidoRepository.findById(qrDto.getPedidoId())
+                    .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + qrDto.getPedidoId()));
+            qrEntity.setPedido(pedido);
+        } else {
+            qrEntity.setPedido(null);
+        }
 
         QrEntity qrActualizado = qrRepository.save(qrEntity);
 
         return convertirQrEntityADto(qrActualizado);
+    }
+
+    public QrDto obtenerUltimoQr() {
+        logger.info("Obteniendo el último qr registrado");
+
+        QrEntity qr = qrRepository.findFirstByOrderByIdDesc();
+        if (qr == null) {
+            throw new RuntimeException("No se encontraron registros de QR");
+        }
+
+        return convertirQrEntityADto(qr);
     }
 
     public void eliminarQr(Integer id) {
@@ -88,8 +107,9 @@ public class QrService {
     private QrDto convertirQrEntityADto(QrEntity qrEntity) {
         return new QrDto(
                 qrEntity.getId(),
-                new java.sql.Date(qrEntity.getFechaCreacion().getTime()),
-                new java.sql.Date(qrEntity.getFechaExpiracion().getTime()),
-                qrEntity.getPedido().getId());
+                qrEntity.getFechaCreacion() != null ? new java.sql.Date(qrEntity.getFechaCreacion().getTime()) : null,
+                qrEntity.getFechaExpiracion() != null ? new java.sql.Date(qrEntity.getFechaExpiracion().getTime()) : null,
+                qrEntity.getPedido() != null ? qrEntity.getPedido().getId() : null,
+                qrEntity.getImageUrl());
     }
 }

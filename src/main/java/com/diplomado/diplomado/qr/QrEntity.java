@@ -31,8 +31,11 @@ public class QrEntity implements Serializable {
     @Column(name = "fecha_expiracion")
     private Date fechaExpiracion;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Clave Foránea a Pedido (Relación OneToOne)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id") // Asume que la PK de QR es también la FK a Pedido, o que Pedido tiene la FK a QR
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "pedido_id")
     private PedidoEntity pedido;
 }

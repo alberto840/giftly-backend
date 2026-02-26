@@ -108,6 +108,25 @@ public class QrController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Qr actualizado exitosamente", qrActualizado));
     }
 
+    @Operation(summary = "Get last QR", description = "Retrieves the last registered QR code. Requires authentication.")
+    @GetMapping("/ultimo")
+    public ResponseEntity<ResponseDto<QrDto>> obtenerUltimoQr(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para obtener el último qr");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para obtener el último qr: {}", username);
+        QrDto qr = qrService.obtenerUltimoQr();
+        return ResponseEntity.ok(new ResponseDto<>(true, "Último qr obtenido exitosamente", qr));
+    }
+
     @Operation(summary = "Delete QR", description = "Deletes a QR code by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarQr(

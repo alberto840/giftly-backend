@@ -11,15 +11,17 @@ public class QrDto implements Serializable {
     private Date fechaCreacion;
     private Date fechaExpiracion;
     private Integer pedidoId;
+    private String imageUrl;
 
     public QrDto() {
     }
 
-    public QrDto(Integer id, Date fechaCreacion, Date fechaExpiracion, Integer pedidoId) {
+    public QrDto(Integer id, Date fechaCreacion, Date fechaExpiracion, Integer pedidoId, String imageUrl) {
         this.id = id;
         this.fechaCreacion = fechaCreacion;
         this.fechaExpiracion = fechaExpiracion;
         this.pedidoId = pedidoId;
+        this.imageUrl = imageUrl;
     }
 
     public Integer getId() {
@@ -52,5 +54,13 @@ public class QrDto implements Serializable {
 
     public void setPedidoId(Integer pedidoId) {
         this.pedidoId = pedidoId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
