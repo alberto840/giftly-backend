@@ -4,12 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import com.diplomado.diplomado.config.JwtConfig;
+import com.diplomado.diplomado.telegram.TelegramService;
 import com.diplomado.diplomado.utils.ResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,11 +25,13 @@ public class PedidoController {
     private static final Logger logger = LoggerFactory.getLogger(PedidoController.class);
     private final PedidoService pedidoService;
     private final JwtConfig jwtConfig;
+    private final TelegramService telegramService;
 
     @Autowired
-    public PedidoController(PedidoService pedidoService, JwtConfig jwtConfig) {
+    public PedidoController(PedidoService pedidoService, JwtConfig jwtConfig, TelegramService telegramService) {
         this.pedidoService = pedidoService;
         this.jwtConfig = jwtConfig;
+        this.telegramService = telegramService;
     }
 
     @Operation(summary = "Create order", description = "Creates a new order. Requires authentication.")
@@ -66,6 +72,66 @@ public class PedidoController {
         logger.info("Usuario autorizado para registrar pedido completo: {}", username);
         PedidoRegistroRequestDto nuevoPedidoCompleto = pedidoService.registrarPedidoCompleto(request);
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido completo registrado exitosamente", nuevoPedidoCompleto));
+    }
+
+    @Operation(summary = "Get complete orders", description = "Retrieves one or all orders with their full details and products.")
+    @GetMapping("/pedidos-completos")
+    public ResponseEntity<ResponseDto<?>> obtenerPedidosCompletos(
+            @RequestParam(required = false) Integer id,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para obtener pedidos completos");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        if (id != null) {
+            PedidoRegistroRequestDto pedido = pedidoService.obtenerPedidoCompletoPorId(id);
+            return ResponseEntity.ok(new ResponseDto<>(true, "Pedido completo obtenido exitosamente", pedido));
+        } else {
+            List<PedidoRegistroRequestDto> pedidos = pedidoService.obtenerTodosLosPedidosCompletos();
+            return ResponseEntity.ok(new ResponseDto<>(true, "Pedidos completos obtenidos exitosamente", pedidos));
+        }
+    }
+
+    @Operation(summary = "Register order with image", description = "Registers a complete order and sends an image to Telegram.")
+    @PostMapping(value = "/registrar-con-imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<PedidoRegistroRequestDto>> registrarConImagen(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("pedido") String pedidoJson,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            PedidoRegistroRequestDto request = objectMapper.readValue(pedidoJson, PedidoRegistroRequestDto.class);
+            
+            // Reutilizamos la lógica de guardado
+            PedidoRegistroRequestDto pedidoGuardado = pedidoService.registrarPedidoCompleto(request);
+            
+            // Enviar notificación a Telegram
+            String caption = String.format("🎉 ¡Nuevo Pedido Registrado!\n🆔 ID: %d\n💰 Total: %s", 
+                    pedidoGuardado.getPedido().getId(), 
+                    pedidoGuardado.getPedido().getTotal());
+            telegramService.enviarFoto(file, caption);
+            
+            return ResponseEntity.ok(new ResponseDto<>(true, "Pedido registrado y notificación enviada", pedidoGuardado));
+        } catch (Exception e) {
+            logger.error("Error al registrar pedido con imagen: {}", e.getMessage());
+            return ResponseEntity.status(500)
+                    .body(new ResponseDto<>(false, "Error al procesar el pedido: " + e.getMessage(), null));
+        }
     }
 
     @Operation(summary = "Get all orders", description = "Retrieves a list of all orders.")

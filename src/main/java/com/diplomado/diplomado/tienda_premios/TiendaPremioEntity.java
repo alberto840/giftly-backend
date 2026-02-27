@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.diplomado.diplomado.pedido.PedidoEntity;
@@ -26,6 +27,12 @@ public class TiendaPremioEntity implements Serializable {
 
     @Column(name = "precio_punto")
     private Integer precioPunto;
+
+    @Column(name = "precio_exp", precision = 10, scale = 2)
+    private BigDecimal precioExp;
+
+    @Column(name = "tipo", length = 100)
+    private String tipo;
 
     // Clave Foránea a Producto
     @ManyToOne(fetch = FetchType.LAZY)

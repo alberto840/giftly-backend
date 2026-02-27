@@ -33,6 +33,7 @@ public class UsuarioService {
         usuarioEntity.setEmail(usuarioDto.getEmail());
         usuarioEntity.setFechaNacimien(usuarioDto.getFechaNacimien());
         usuarioEntity.setPuntos(usuarioDto.getPuntos());
+        usuarioEntity.setExp(usuarioDto.getExp());
         usuarioEntity.setRol(rol);
 
         UsuarioEntity nuevoUsuario = usuarioRepository.save(usuarioEntity);
@@ -72,6 +73,7 @@ public class UsuarioService {
         usuarioEntity.setEmail(usuarioDto.getEmail());
         usuarioEntity.setFechaNacimien(usuarioDto.getFechaNacimien());
         usuarioEntity.setPuntos(usuarioDto.getPuntos());
+        usuarioEntity.setExp(usuarioDto.getExp());
         usuarioEntity.setRol(rol);
 
         UsuarioEntity usuarioActualizado = usuarioRepository.save(usuarioEntity);
@@ -100,6 +102,7 @@ public class UsuarioService {
                                                                                // MisionDto used java.sql.Date.
                                                                                // UsuarioEntity uses java.util.Date.
                 usuarioEntity.getPuntos(),
+                usuarioEntity.getExp(),
                 usuarioEntity.getRol().getId());
     }
 }

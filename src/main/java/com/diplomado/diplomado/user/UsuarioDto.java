@@ -1,6 +1,7 @@
 package com.diplomado.diplomado.user;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 public class UsuarioDto implements Serializable {
@@ -12,17 +13,19 @@ public class UsuarioDto implements Serializable {
     private String email;
     private Date fechaNacimien;
     private Integer puntos;
+    private BigDecimal exp;
     private Integer rolId;
 
     public UsuarioDto() {
     }
 
-    public UsuarioDto(Integer id, String nombreCompl, String email, Date fechaNacimien, Integer puntos, Integer rolId) {
+    public UsuarioDto(Integer id, String nombreCompl, String email, Date fechaNacimien, Integer puntos, BigDecimal exp, Integer rolId) {
         this.id = id;
         this.nombreCompl = nombreCompl;
         this.email = email;
         this.fechaNacimien = fechaNacimien;
         this.puntos = puntos;
+        this.exp = exp;
         this.rolId = rolId;
     }
 
@@ -64,6 +67,14 @@ public class UsuarioDto implements Serializable {
 
     public void setPuntos(Integer puntos) {
         this.puntos = puntos;
+    }
+
+    public BigDecimal getExp() {
+        return exp;
+    }
+
+    public void setExp(BigDecimal exp) {
+        this.exp = exp;
     }
 
     public Integer getRolId() {

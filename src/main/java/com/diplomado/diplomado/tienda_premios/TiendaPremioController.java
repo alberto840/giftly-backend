@@ -128,4 +128,24 @@ public class TiendaPremioController {
         tiendaPremioService.eliminarTiendaPremio(id);
         return ResponseEntity.ok(new ResponseDto<>(true, "Tienda premio eliminada exitosamente", null));
     }
+
+    @Operation(summary = "Get prize shop items by type", description = "Retrieves a list of prize shop items filtered by type.")
+    @GetMapping("/filtrar/{tipo}")
+    public ResponseEntity<ResponseDto<List<TiendaPremioDto>>> obtenerTiendaPremiosPorTipo(
+            @PathVariable String tipo,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para obtener tienda premios por tipo");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para obtener tienda premios por tipo: {}", tipo);
+        List<TiendaPremioDto> tiendaPremios = tiendaPremioService.obtenerTiendaPremiosPorTipo(tipo);
+        return ResponseEntity.ok(new ResponseDto<>(true, "Tienda premios filtradas obtenidas exitosamente", tiendaPremios));
+    }
 }

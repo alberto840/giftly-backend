@@ -6,6 +6,7 @@ import com.diplomado.diplomado.user.UsuarioEntity;
 import com.diplomado.diplomado.user.UsuarioRepository;
 import com.diplomado.diplomado.detalle_pedido.DetallePedidoEntity;
 import com.diplomado.diplomado.detalle_pedido.DetallePedidoRepository;
+import com.diplomado.diplomado.detalle_pedido.DetallePedidoDto;
 import com.diplomado.diplomado.pedido_producto.PedidoProductoDto;
 import com.diplomado.diplomado.pedido_producto.PedidoProductoEntity;
 import com.diplomado.diplomado.pedido_producto.PedidoProductoRepository;
@@ -110,6 +111,7 @@ public class PedidoService {
             detalleEntity.setCelular1(request.getDetallePedido().getCelular1());
             detalleEntity.setCelular2(request.getDetallePedido().getCelular2());
             detalleEntity.setNombreObjetivo(request.getDetallePedido().getNombreObjetivo());
+            detalleEntity.setNombreEmisor(request.getDetallePedido().getNombreEmisor());
             detalleEntity.setPedido(pedidoGuardado);
             
             if (request.getDetallePedido().getUbicacionId() != null) {
@@ -141,6 +143,54 @@ public class PedidoService {
 
         logger.info("Pedido completo registrado con ID: {}", pedidoGuardado.getId());
         return request;
+    }
+
+    public PedidoRegistroRequestDto obtenerPedidoCompletoPorId(Integer id) {
+        logger.info("Obteniendo pedido completo con ID: {}", id);
+        PedidoEntity pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + id));
+        return convertirPedidoEntityARequestDto(pedido);
+    }
+
+    public List<PedidoRegistroRequestDto> obtenerTodosLosPedidosCompletos() {
+        logger.info("Obteniendo todos los pedidos completos");
+        return pedidoRepository.findAll().stream()
+                .map(this::convertirPedidoEntityARequestDto)
+                .collect(Collectors.toList());
+    }
+
+    private PedidoRegistroRequestDto convertirPedidoEntityARequestDto(PedidoEntity entity) {
+        PedidoDto pedidoDto = convertirPedidoEntityADto(entity);
+        
+        DetallePedidoDto detalleDto = null;
+        if (entity.getDetallePedido() != null) {
+            detalleDto = new DetallePedidoDto(
+                    entity.getDetallePedido().getId(),
+                    entity.getDetallePedido().getMensaje(),
+                    entity.getDetallePedido().getInstrucciones(),
+                    entity.getDetallePedido().getReceptorEncarga(),
+                    entity.getDetallePedido().getCelular1(),
+                    entity.getDetallePedido().getCelular2(),
+                    entity.getDetallePedido().getNombreObjetivo(),
+                    entity.getDetallePedido().getNombreEmisor(),
+                    entity.getId(),
+                    entity.getDetallePedido().getUbicacion() != null ? entity.getDetallePedido().getUbicacion().getId() : null
+            );
+        }
+
+        List<PedidoProductoDto> productosDto = null;
+        if (entity.getPedidoProductos() != null) {
+            productosDto = entity.getPedidoProductos().stream()
+                    .map(pp -> new PedidoProductoDto(
+                            pp.getId(),
+                            pp.getCantidad(),
+                            entity.getId(),
+                            pp.getProducto().getId()
+                    ))
+                    .collect(Collectors.toList());
+        }
+
+        return new PedidoRegistroRequestDto(pedidoDto, detalleDto, productosDto);
     }
 
     public List<PedidoDto> obtenerTodosLosPedidos() {

@@ -31,6 +31,8 @@ public class TiendaPremioService {
 
         TiendaPremioEntity tiendaPremioEntity = new TiendaPremioEntity();
         tiendaPremioEntity.setPrecioPunto(tiendaPremioDto.getPrecioPunto());
+        tiendaPremioEntity.setPrecioExp(tiendaPremioDto.getPrecioExp());
+        tiendaPremioEntity.setTipo(tiendaPremioDto.getTipo());
         tiendaPremioEntity.setProducto(producto);
 
         TiendaPremioEntity nuevaTiendaPremio = tiendaPremioRepository.save(tiendaPremioEntity);
@@ -68,6 +70,8 @@ public class TiendaPremioService {
                         "Producto no encontrado con ID: " + tiendaPremioDto.getProductoId()));
 
         tiendaPremioEntity.setPrecioPunto(tiendaPremioDto.getPrecioPunto());
+        tiendaPremioEntity.setPrecioExp(tiendaPremioDto.getPrecioExp());
+        tiendaPremioEntity.setTipo(tiendaPremioDto.getTipo());
         tiendaPremioEntity.setProducto(producto);
 
         TiendaPremioEntity tiendaPremioActualizada = tiendaPremioRepository.save(tiendaPremioEntity);
@@ -85,10 +89,21 @@ public class TiendaPremioService {
         tiendaPremioRepository.deleteById(id);
     }
 
+    public List<TiendaPremioDto> obtenerTiendaPremiosPorTipo(String tipo) {
+        logger.info("Obteniendo tienda premios filtradas por tipo: {}", tipo);
+
+        List<TiendaPremioEntity> tiendaPremios = tiendaPremioRepository.findByTipo(tipo);
+        return tiendaPremios.stream()
+                .map(this::convertirTiendaPremioEntityADto)
+                .collect(Collectors.toList());
+    }
+
     private TiendaPremioDto convertirTiendaPremioEntityADto(TiendaPremioEntity tiendaPremioEntity) {
         return new TiendaPremioDto(
                 tiendaPremioEntity.getId(),
                 tiendaPremioEntity.getPrecioPunto(),
+                tiendaPremioEntity.getPrecioExp(),
+                tiendaPremioEntity.getTipo(),
                 tiendaPremioEntity.getProducto().getId());
     }
 }

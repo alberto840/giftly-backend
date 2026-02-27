@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,9 @@ public class UsuarioEntity implements Serializable {
 
     @Column(name = "puntos")
     private Integer puntos;
+
+    @Column(name = "exp", precision = 10, scale = 2)
+    private BigDecimal exp;
 
     // Relación ManyToOne con Roles
     @ManyToOne(fetch = FetchType.LAZY)
