@@ -127,4 +127,45 @@ public class UsuarioController {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.ok(new ResponseDto<>(true, "Usuario eliminado exitosamente", null));
     }
+
+    @Operation(summary = "Modificar exp y puntos de usuario", description = "Suma o resta puntos y exp a un usuario existente.")
+    @PutMapping("/modificar-puntos-exp/{id}")
+    public ResponseEntity<ResponseDto<UsuarioDto>> modificarExpYPuntos(
+            @PathVariable Integer id,
+            @RequestBody ModificarExpPuntosDto request,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido para modificar puntos/exp de usuario");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para modificar puntos/exp del usuario con ID: {}", id);
+        UsuarioDto actualizado = usuarioService.modificarExpYPuntos(id, request.getDeltaExp(), request.getDeltaPuntos());
+        return ResponseEntity.ok(new ResponseDto<>(true, "Puntos y exp actualizados exitosamente", actualizado));
+    }
+
+    @Operation(summary = "Obtener puntos del usuario", description = "Retorna solo la cantidad de puntos de un usuario específico.")
+    @GetMapping("/puntos/{id}")
+    public ResponseEntity<ResponseDto<Integer>> obtenerPuntosDeUsuario(
+            @PathVariable Integer id,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido para obtener puntos de usuario");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para obtener puntos del usuario con ID: {}", id);
+        Integer puntos = usuarioService.obtenerPuntosDeUsuario(id);
+        return ResponseEntity.ok(new ResponseDto<>(true, "Puntos obtenidos exitosamente", puntos));
+    }
 }

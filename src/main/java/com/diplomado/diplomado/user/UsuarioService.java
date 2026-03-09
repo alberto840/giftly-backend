@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,8 @@ public class UsuarioService {
         usuarioEntity.setNombreCompl(usuarioDto.getNombreCompl());
         usuarioEntity.setEmail(usuarioDto.getEmail());
         usuarioEntity.setFechaNacimien(usuarioDto.getFechaNacimien());
-        usuarioEntity.setPuntos(usuarioDto.getPuntos());
-        usuarioEntity.setExp(usuarioDto.getExp());
+        usuarioEntity.setPuntos(0);
+        usuarioEntity.setExp(BigDecimal.ZERO);
         usuarioEntity.setRol(rol);
 
         UsuarioEntity nuevoUsuario = usuarioRepository.save(usuarioEntity);
@@ -79,6 +80,38 @@ public class UsuarioService {
         UsuarioEntity usuarioActualizado = usuarioRepository.save(usuarioEntity);
 
         return convertirUsuarioEntityADto(usuarioActualizado);
+    }
+
+    /**
+     * Suma o resta exp y puntos a un usuario.
+     * Pasar valores positivos para sumar, negativos para restar.
+     */
+    public UsuarioDto modificarExpYPuntos(Integer id, BigDecimal deltaExp, Integer deltaPuntos) {
+        logger.info("Modificando exp y puntos del usuario con ID: {}", id);
+
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        BigDecimal expActual = usuario.getExp() != null ? usuario.getExp() : BigDecimal.ZERO;
+        Integer puntosActual = usuario.getPuntos() != null ? usuario.getPuntos() : 0;
+
+        usuario.setExp(expActual.add(deltaExp));
+        usuario.setPuntos(puntosActual + deltaPuntos);
+
+        UsuarioEntity usuarioActualizado = usuarioRepository.save(usuario);
+        logger.info("Exp y puntos actualizados para usuario ID: {}", id);
+
+        return convertirUsuarioEntityADto(usuarioActualizado);
+    }
+
+    /** Retorna solo los puntos actuales de un usuario. */
+    public Integer obtenerPuntosDeUsuario(Integer id) {
+        logger.info("Obteniendo puntos del usuario con ID: {}", id);
+
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        return usuario.getPuntos() != null ? usuario.getPuntos() : 0;
     }
 
     public void eliminarUsuario(Integer id) {
