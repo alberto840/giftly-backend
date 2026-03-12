@@ -18,7 +18,7 @@ public class CorsConfig {
         // Orígenes permitidos
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:4200",
-                "https://giftly-frontend-umber.vercel.app/"));
+                "https://giftly-frontend-umber.vercel.app"));
         // Métodos permitidos
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Cabeceras permitidas
