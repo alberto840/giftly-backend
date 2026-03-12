@@ -194,6 +194,27 @@ public class PedidoController {
         return ResponseEntity.ok(new ResponseDto<>(true, "Pedido actualizado exitosamente", pedidoActualizado));
     }
 
+    @Operation(summary = "Update order status", description = "Updates the status of an order by its ID.")
+    @PutMapping("/cambiar-estado/{id}")
+    public ResponseEntity<ResponseDto<PedidoDto>> cambiarEstadoPedido(
+            @PathVariable Integer id,
+            @RequestParam String tipo,
+            @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+
+        String extractedToken = token.replace("Bearer ", "");
+        String username = jwtConfig.extractUsername(extractedToken);
+
+        if (username == null || !jwtConfig.validateToken(extractedToken, username)) {
+            logger.warn("Token inválido o usuario no autorizado para cambiar estado de pedido");
+            return ResponseEntity.status(401)
+                    .body(new ResponseDto<>(false, "Token inválido o usuario no autorizado", null));
+        }
+
+        logger.info("Usuario autorizado para cambiar estado de pedido con ID: {} a {}", id, tipo);
+        PedidoDto pedidoActualizado = pedidoService.cambiarEstado(id, tipo);
+        return ResponseEntity.ok(new ResponseDto<>(true, "Estado de pedido actualizado exitosamente", pedidoActualizado));
+    }
+
     @Operation(summary = "Delete order", description = "Deletes an order by its ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ResponseDto<Void>> eliminarPedido(

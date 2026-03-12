@@ -21,7 +21,7 @@ public class CorsConfig {
         // Métodos permitidos
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Cabeceras permitidas
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "id"));
         // Permitir que se envíen cookies (autenticación, etc.)
         config.setAllowCredentials(true);
         // Asegurarse de permitir la cabecera 'Access-Control-Allow-Origin'

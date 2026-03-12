@@ -240,6 +240,18 @@ public class PedidoService {
         return convertirPedidoEntityADto(pedidoActualizado);
     }
 
+    public PedidoDto cambiarEstado(Integer id, String tipo) {
+        logger.info("Cambiando estado del pedido con ID: {} a {}", id, tipo);
+
+        PedidoEntity pedidoEntity = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + id));
+
+        pedidoEntity.setStatus(tipo);
+        PedidoEntity pedidoActualizado = pedidoRepository.save(pedidoEntity);
+
+        return convertirPedidoEntityADto(pedidoActualizado);
+    }
+
     public void eliminarPedido(Integer id) {
         logger.info("Eliminando pedido con ID: {}", id);
 
